@@ -1,0 +1,80 @@
+[
+  {
+    "id": 1,
+    "code": "RD",
+    "name_ar": "منطقة الرياض",
+    "name_en": "Riyadh Province"
+  },
+  {
+    "id": 2,
+    "code": "MQ",
+    "name_ar": "منطقة مكة المكرمة",
+    "name_en": "Mecca Province"
+  },
+  {
+    "id": 3,
+    "code": "MN",
+    "name_ar": "منطقة المدينة المنورة",
+    "name_en": "Madinah Province"
+  },
+  {
+    "id": 4,
+    "code": "QA",
+    "name_ar": "منطقة القصيم",
+    "name_en": "Qassim Province"
+  },
+  {
+    "id": 5,
+    "code": "SQ",
+    "name_ar": "المنطقة الشرقية",
+    "name_en": "Eastern Province"
+  },
+  {
+    "id": 6,
+    "code": "AS",
+    "name_ar": "منطقة عسير",
+    "name_en": "Asir Province"
+  },
+  {
+    "id": 7,
+    "code": "TB",
+    "name_ar": "منطقة تبوك",
+    "name_en": "Tabuk Province"
+  },
+  {
+    "id": 8,
+    "code": "HA",
+    "name_ar": "منطقة حائل",
+    "name_en": "Hail Province"
+  },
+  {
+    "id": 9,
+    "code": "SH",
+    "name_ar": "منطقة الحدود الشمالية",
+    "name_en": "Northern Borders Province"
+  },
+  {
+    "id": 10,
+    "code": "GA",
+    "name_ar": "منطقة جازان",
+    "name_en": "Jazan Province"
+  },
+  {
+    "id": 11,
+    "code": "NG",
+    "name_ar": "منطقة نجران",
+    "name_en": "Najran Province"
+  },
+  {
+    "id": 12,
+    "code": "BA",
+    "name_ar": "منطقة الباحة",
+    "name_en": "Bahah Province"
+  },
+  {
+    "id": 13,
+    "code": "GO",
+    "name_ar": "منطقة الجوف",
+    "name_en": "Jawf Province"
+  }
+]
