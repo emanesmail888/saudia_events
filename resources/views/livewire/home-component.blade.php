@@ -6,7 +6,7 @@
                             To Enjoy With Your Family</h3>
                         <p class="animated fadeIn mb-4 pb-2">Explore all the events around you, everywhere in Saudi
                             Arabia, and enjoy them with your family.</p>
-                        <a href="" class="btn btn-primary py-3 px-5 me-3 animated fadeIn">Get Started</a>
+                        <a href="{{route('all_events')}}" class="btn btn-primary py-3 px-5 me-3 animated fadeIn">Get Started</a>
                     </div>
                     <div class="col-md-6 animated fadeIn">
                         <div class="owl-carousel header-carousel">
@@ -102,7 +102,7 @@
             <!-- About End -->
 
 
-            <!-- Property List Start -->
+            <!-- City List Start -->
             <div class="container-xxl py-5">
                 <div class="container">
                     <div class="row g-0 gx-5 align-items-end">
@@ -255,7 +255,7 @@
                     </div>
                 </div>
             </div>
-            <!-- Property List End -->
+            <!-- City List End -->
 
 
             <!-- Call to Action Start -->
@@ -283,7 +283,7 @@
             <!-- Call to Action End -->
 
 
-            <!-- Team Start -->
+            <!-- Plan Start -->
             <div class="container-xxl py-5">
                 <div class="container">
                     <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s"
@@ -297,7 +297,7 @@
                             <div class="col-lg-4 col-md-6 wow fadeInUp" data-wow-delay="0.1s">
                                 <div class="team-item rounded overflow-hidden">
                                     <div class="position-relative">
-                                        <img class="img-fluid mx-auto mb-5" style="width:200px;height:200px;" src="{{asset('assets/images/plans')}}/{{$plan->image}}" alt="{{$plan->name}}">
+                                        <img class="img-fluid d-block mx-auto mb-5 pt-3" style="width:200px;height:200px;" src="{{asset('assets/images/plans')}}/{{$plan->image}}" alt="{{$plan->name}}">
                                         <div class="position-absolute start-50 top-100 translate-middle my-4 d-flex align-items-center">
 
                                             <h5 style="color:#00B98E;">{{$plan->price}} </h5>
@@ -310,7 +310,7 @@
                                     </div>
                                     <div class="text-center p-4 mt-3">
                                         <a class="btn btn-primary py-2 px-5"
-                                        href="#">Subscription Now
+                                        href="{{route('plan_details',['plan_id'=>$plan->id])}}">Subscription Now
                                       </a>
                                     </div>
 
@@ -322,62 +322,37 @@
                     </div>
                 </div>
             </div>
-            <!-- Team End -->
+            <!-- Plan End -->
 
 
-            <!-- Testimonial Start -->
+            <!-- Experiences Start -->
             <div class="container-xxl py-5">
                 <div class="container">
                     <div class="text-center mx-auto mb-5 wow fadeInUp" data-wow-delay="0.1s"
                         style="max-width: 600px;">
-                        <h1 class="mb-3">Our Clients Say!</h1>
-                        <p>Eirmod sed ipsum dolor sit rebum labore magna erat. Tempor ut dolore lorem kasd vero ipsum
-                            sit eirmod sit. Ipsum diam justo sed rebum vero dolor duo.</p>
+                        <h1 class="mb-3">Experiences Around Year</h1>
+                        <p>Discover events and travels found around the year. Join online in travels and events by booking online from event site. Determine the day and time you prefer.</p>
                     </div>
                     <div class="owl-carousel testimonial-carousel wow fadeInUp" data-wow-delay="0.1s">
-                        <div class="testimonial-item bg-light rounded p-3">
-                            <div class="bg-white border rounded p-4">
-                                <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor
-                                    amet diam stet. Est stet ea lorem amet est kasd kasd erat eos</p>
-                                <div class="d-flex align-items-center">
-                                    <img class="img-fluid flex-shrink-0 rounded" src="img/testimonial-1.jpg"
-                                        style="width: 45px; height: 45px;">
-                                    <div class="ps-3">
-                                        <h6 class="fw-bold mb-1">Client Name</h6>
-                                        <small>Profession</small>
+                        @foreach($experiences_events as $experiences_event)
+                            <div class="testimonial-item bg-light rounded p-3">
+                                <div class="bg-white border rounded ">
+                                    <!-- <p>{{$experiences_event->event_title}}</p> -->
+                                    <div class="">
+                                        <a href="{{$experiences_event->url}}"><img class="img-fluid flex-shrink-0 rounded" src="{{$experiences_event->event_image}}"
+                                            style="width: 100%; height:200px; position:relative;box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);"></a>
+                                        <div class="" style="position: absolute;top: 50%;left: 25%;transform: translate(-20%, -20%);
+                                            font-weight: bold;text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);">
+                                            <a href="{{$experiences_event->url}}" class="text-bold mb-1 text-white"><h6 class="text-bold  text-white" style="font-size: 22px;">{{$experiences_event->event_name}}</h6></a>
+                                            <small>{{$experiences_event->event_start_price}}</small>
+                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="testimonial-item bg-light rounded p-3">
-                            <div class="bg-white border rounded p-4">
-                                <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor
-                                    amet diam stet. Est stet ea lorem amet est kasd kasd erat eos</p>
-                                <div class="d-flex align-items-center">
-                                    <img class="img-fluid flex-shrink-0 rounded" src="img/testimonial-2.jpg"
-                                        style="width: 45px; height: 45px;">
-                                    <div class="ps-3">
-                                        <h6 class="fw-bold mb-1">Client Name</h6>
-                                        <small>Profession</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="testimonial-item bg-light rounded p-3">
-                            <div class="bg-white border rounded p-4">
-                                <p>Tempor stet labore dolor clita stet diam amet ipsum dolor duo ipsum rebum stet dolor
-                                    amet diam stet. Est stet ea lorem amet est kasd kasd erat eos</p>
-                                <div class="d-flex align-items-center">
-                                    <img class="img-fluid flex-shrink-0 rounded" src="img/testimonial-3.jpg"
-                                        style="width: 45px; height: 45px;">
-                                    <div class="ps-3">
-                                        <h6 class="fw-bold mb-1">Client Name</h6>
-                                        <small>Profession</small>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                        @endforeach
+                       
                     </div>
                 </div>
             </div>
-            <!-- Testimonial End -->
+            <!-- Experiences End -->

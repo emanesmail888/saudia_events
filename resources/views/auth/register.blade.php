@@ -1,9 +1,6 @@
-
-
-
-
 <x-guest-layout>
         <div class="row">
+            <h5 class="p-5">Register!!!!</h5>
 
             <div class="col-md-6">
                 <img class="wave" src="{{ asset('dist/img/wave.png') }}">

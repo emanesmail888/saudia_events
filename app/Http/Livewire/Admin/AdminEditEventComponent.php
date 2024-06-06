@@ -42,17 +42,17 @@ class AdminEditEventComponent extends Component
 
     public function render()
     {
-        $categories=Category::all();
+        $categories=Category::cursor();
         $scategories=Subcategory::where('category_id',$this->category_id)->get();
-        $regions=Region::all();
-        $cities=City::all();
+        $regions=Region::cursor();
+        $cities=City::cursor();
 
         return view('livewire.admin.admin-edit-event-component',['categories'=>$categories,'scategories'=>$scategories,'regions'=>$regions,'cities'=>$cities])->layout('layouts.admin');
     }
 
     public function mount($event_id)
     {
-        $event=Event::where('id',$event_id)->first();
+        $event=Event::where('id',$event_id)->firstOrFail();
 
         $this->event_details=$event->event_details;
         $this->event_name=$event->event_name;

@@ -562,14 +562,23 @@ border: #00B98E;
     border: none;
 }
 
-
-
-input[type="checkbox"]:checked {
+.step1-active {
     background-color: #0E2E50;
+    border-color: #0E2E50;
+}
+#root input[type="checkbox"]:checked {
+    background-color: #0E2E50!important;
     border-color: #2e5d8f;
   }
-input[type="checkbox"]:focus {
-    background-color: #0E2E50;
+#root .form-check-input:checked{
+    border-color: #2e5d8f;
+    background-color: #0E2E50!important;
+
+
+
+}
+#root input[type="checkbox"]:focus {
+    background-color: #0E2E50!important;
     /* border-color: #f35d21; */
     box-shadow: none;
     outline: none;

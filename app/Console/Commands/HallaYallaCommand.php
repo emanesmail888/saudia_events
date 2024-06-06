@@ -133,7 +133,7 @@ class HallaYallaCommand extends Command
                 $cat = Category::firstOrCreate(['name' => $category]);
 
                 $hero_image = $event->venue_image;
-                $location=$city.$region;
+                $location=$city."-".$region;
 
                 $cityModel = City::where(function ($query) use ($city) {
                     $query->where('name_ar',  $city )
@@ -202,6 +202,7 @@ class HallaYallaCommand extends Command
                     $event->location = $location;
                     $event->event_type = $event_type;
                     $event->duration = $duration;
+                    $event->event_start_price = $price;
                     // Save the event to the database
                     $event->save();
 

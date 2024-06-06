@@ -23,6 +23,8 @@ class HomeComponent extends Component
         $diriah_city_id = City::where('name_ar', '=', 'الدرعية')->first()->id;
         $diriah_events = Event::where('city_id', '=', $diriah_city_id)->get()->take(9);
         $plans=Plan::cursor();
+        $experiences_events = Event::where('duration', 'AllYear')->get();
+
 
 
         return view('livewire.home-component',['categories'=>$categories,
@@ -35,6 +37,7 @@ class HomeComponent extends Component
         'jaddah_city_id'=>$jaddah_city_id,
         'diriah_city_id'=>$diriah_city_id,
         'plans'=>$plans,
+        'experiences_events'=>$experiences_events,
         ])->layout('layouts.home');
     }
 }

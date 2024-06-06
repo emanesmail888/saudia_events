@@ -1,11 +1,13 @@
 <x-guest-layout>
         <div class="row">
-            <div class="col-md-6">
-            <img class="wave" src="{{ asset('dist/img/wave.png') }}">
+            <h5 class="p-5">Login!!!!</h5>
 
-            <div class="img">
-			 <img src="{{ asset('dist/img/bg.svg') }}">
-		    </div>
+            <div class="col-md-6">
+                <img class="wave" src="{{ asset('dist/img/wave.png') }}">
+
+                <div class="img">
+                <img src="{{ asset('dist/img/bg.svg') }}">
+                </div>
             </div><!-- col-md-6" -->
 
             <div class="col-md-4 offset-lg-1">
@@ -61,7 +63,7 @@
                 </div>
 
             </div><!-- col-md-4 -->
-        </div>
+        </div><!-- row -->
        
 
      

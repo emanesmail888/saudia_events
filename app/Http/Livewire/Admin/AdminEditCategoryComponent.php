@@ -31,7 +31,7 @@ class AdminEditCategoryComponent extends Component
     public function mount($category_id,$scategory_id=null){
         if($scategory_id)
         {
-        $scategory=Subcategory::where('id',$scategory_id)->first();
+        $scategory=Subcategory::where('id',$scategory_id)->firstOrFail();
         $this->scategory_id=$scategory->id;
         $this->category_id=$scategory->category_id;
         $this->name=$scategory->name;
@@ -40,7 +40,7 @@ class AdminEditCategoryComponent extends Component
 
         }
         else{
-        $category=Category::where('id',$category_id)->first();
+        $category=Category::where('id',$category_id)->firstOrFail();
         $this->category_id=$category->id;
         $this->name=$category->name;
         $this->image=$category->image;

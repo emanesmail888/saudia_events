@@ -9,9 +9,9 @@
     <meta content="" name="description">
 
     <!-- Favicon -->
+
     <link href="{{asset('dist/img/favicon.ico')}}" rel="icon">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    @livewireStyles
 
     <!-- Google Web Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -96,6 +96,8 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> My Account({{Auth::user()->name}})</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a title="Dashboard" class="dropdown-item" href="{{route('user.dashboard')}}">Dashboard</a>
+                                    <a title="My Profile" class="dropdown-item" href="{{route('user.profile')}}">My Profile</a>
+                                    <a title="change Password" class="dropdown-item" href="{{route('user.changePassword')}}">change Password</a>
                                     <li class="dropdown-item" >
                                         <a  href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form') .submit();">logout</a>
                                     </li>

@@ -95,4 +95,8 @@ class User extends Authenticatable
     {
         return $this->hasOneThrough(Plan::class, Subscription::class, 'user_id', 'id', 'id', 'plan_id');
     }
+    
+    public function profile(){
+        return $this->hasOne(Profile::class,'user_id');
+    }
 }

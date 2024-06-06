@@ -17,6 +17,7 @@ class UserDashboardComponent extends Component
     public $service_type;
 
 
+
     public function render()
     {
         $cats=Category::cursor();
@@ -26,7 +27,7 @@ class UserDashboardComponent extends Component
         $service = Auth::user()->service_type;
 
 
-        return view('livewire.user.user-dashboard-component',['cats'=>$cats,'regs'=>$regs,'userCategories'=>$userCategories,'userRegions'=>$userRegions,'service'=>$service])->layout('layouts.home');
+        return view('livewire.user.user-dashboard-component',['cats'=>$cats,'regs'=>$regs,'userCategories'=>$userCategories,'userRegions'=>$userRegions,'service'=>$service])->layout('layouts.guest');
     }
 
     public function updated($fields){
@@ -53,6 +54,7 @@ class UserDashboardComponent extends Component
         'service_type' => 'required|string',
         'regions' => 'required|array',
     ]);
+   
 
     // Update the user's dashboard data
     $user = auth()->user();

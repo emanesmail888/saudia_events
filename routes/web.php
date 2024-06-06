@@ -13,10 +13,16 @@ use App\Http\Livewire\Admin\AdminAddPlanComponent;
 use App\Http\Livewire\Admin\AdminEditEventComponent;
 use App\Http\Livewire\Admin\AdminEditPlanComponent;
 use App\Http\Livewire\User\UserDashboardComponent;
+use App\Http\Livewire\User\UserProfileComponent;
+use App\Http\Livewire\User\UserEditProfileComponent;
+use App\Http\Livewire\User\UserChangePasswordComponent;
 use App\Http\Livewire\HomeComponent;
+use App\Http\Livewire\SubscriptionComponent;
 use App\Http\Livewire\CategoryComponent;
+use App\Http\Livewire\PlanDetailsComponent;
 use App\Http\Livewire\ContactComponent;
 use App\Http\Livewire\EventCityComponent;
+use App\Http\Livewire\AllEventsComponent;
 use App\Http\Livewire\Admin\AdminSettingComponent;
 use App\Actions\Fortify\CreateNewUser;
 
@@ -72,7 +78,9 @@ Route::middleware(['auth:sanctum','verified','authAdmin'])->group(function () {
 
 Route::middleware(['auth:sanctum','verified'])->group(function () {
     Route::get('/user/dashboard',UserDashboardComponent::class)->name('user.dashboard');
-
+    Route::get('/user/profile',UserProfileComponent::class)->name('user.profile');
+    Route::get('/user/profile/edit',UserEditProfileComponent::class)->name('user.editProfile');
+    Route::get('/user/change-password',UserChangePasswordComponent::class)->name('user.changePassword');
 
 
 });
@@ -80,6 +88,13 @@ Route::get('/',HomeComponent::class)->name('home');
 Route::get('/events/{city_id}',EventCityComponent::class)->name('events.city');
 Route::get('/event-category/{category_id}/{scategory_slug?}',CategoryComponent::class)->name('event.category');
 Route::get('/contact-us', ContactComponent::class)->name('contact');
+Route::get('/plan_details/{plan_id}',PlanDetailsComponent::class)->name('plan_details');
+Route::get('/subscribe', SubscriptionComponent::class)->name('subscribe');
+Route::get('/all-events', AllEventsComponent::class)->name('all_events');
+
+
+
+
 
 
 

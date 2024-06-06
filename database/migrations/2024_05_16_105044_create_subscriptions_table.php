@@ -19,6 +19,7 @@ class CreateSubscriptionsTable extends Migration
             $table->unsignedBigInteger('plan_id');
             $table->date('starts_at');
             $table->date('ends_at');
+            $table->decimal('total');
             $table->enum('status', ['active', 'cancelled', 'expired'])->default('active');
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

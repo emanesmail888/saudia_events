@@ -96,6 +96,8 @@
                                 <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown"> My Account({{Auth::user()->name}})</a>
                                 <div class="dropdown-menu rounded-0 m-0">
                                     <a title="Dashboard" class="dropdown-item" href="{{route('user.dashboard')}}">Dashboard</a>
+                                    <a title="My Profile" class="dropdown-item" href="{{route('user.profile')}}">My Profile</a>
+                                    <a title="change Password" class="dropdown-item" href="{{route('user.changePassword')}}">change Password</a>
                                     <li class="dropdown-item" >
                                         <a  href="{{route('logout')}}" onclick="event.preventDefault(); document.getElementById('logout-form') .submit();">logout</a>
                                     </li>
@@ -117,7 +119,6 @@
 
 
                     </div>
-                    {{-- <a href="" class="btn btn-primary px-3 d-none d-lg-flex">Add Event</a> --}}
                 </div>
             </nav>
         </div>

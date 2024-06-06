@@ -25,7 +25,7 @@ class AdminEditPlanComponent extends Component
 
     public function mount($plan_id)
     {
-        $plan=Plan::where('id',$plan_id)->first();
+        $plan=Plan::where('id',$plan_id)->firstOrFail();
 
         $this->description=$plan->description;
         $this->name=$plan->name;
