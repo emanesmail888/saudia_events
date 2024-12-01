@@ -26,6 +26,10 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Schema::defaultStringLength(191);
+        // Route::pattern('locale', '[a-zA-Z]{2}');
+        // URL::defaults(['locale' => app()->getLocale()]);
+    
+        // parent::boot();
 
     }
 }

@@ -64,5 +64,9 @@ class CreateNewUser implements CreatesNewUsers
         $regions = Region::all();
         return view('auth.register', ['regions' => $regions]);
     }
+    public function showLoginForm()
+    {
+        return view('auth.login');
+    }
 }
 

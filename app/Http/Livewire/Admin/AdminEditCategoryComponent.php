@@ -14,9 +14,11 @@ class AdminEditCategoryComponent extends Component
     use WithFileUploads;
     public $category_id;
     public $name;
+    public $name_ar;
     public $image;
     public $newImage;
     public $scategory_id;
+    
     public function render()
     {
         $categories=Category::all();
@@ -35,6 +37,7 @@ class AdminEditCategoryComponent extends Component
         $this->scategory_id=$scategory->id;
         $this->category_id=$scategory->category_id;
         $this->name=$scategory->name;
+        $this->name_ar=$scategory->name_ar;
         $this->image=$scategory->image;
 
 
@@ -43,6 +46,7 @@ class AdminEditCategoryComponent extends Component
         $category=Category::where('id',$category_id)->firstOrFail();
         $this->category_id=$category->id;
         $this->name=$category->name;
+        $this->name_ar=$category->name_ar;
         $this->image=$category->image;
         }
 
@@ -53,6 +57,7 @@ class AdminEditCategoryComponent extends Component
 
         $this->validateOnly($fields,[
             'name'=>'required',
+            'name_ar'=>'required',
 
         ]);
 
@@ -60,12 +65,14 @@ class AdminEditCategoryComponent extends Component
     public function updateCategory(){
         $this->validate([
             'name'=>'required',
+            'name_ar'=>'required',
 
         ]);
         if($this->scategory_id)
         {
             $scategory=Subcategory::findOrFail($this->scategory_id);
             $scategory->name=$this->name;
+            $scategory->name_ar=$this->name_ar;
             $scategory->category_id=$this->category_id;
             if($this->newImage)
             {
@@ -82,6 +89,7 @@ class AdminEditCategoryComponent extends Component
 
         $category=Category::findOrFail($this->category_id);
         $category->name=$this->name;
+        $category->name_ar=$this->name_ar;
         if($this->newImage)
             {
                 $imageName=Carbon::now()->timestamp.'.'.$this->newImage->getClientOriginalName();
@@ -93,6 +101,7 @@ class AdminEditCategoryComponent extends Component
             }
         session()->flash('message','Category has been updated');
         $this->name="";
+        $this->name_ar="";
         $this->image="";
     }
 

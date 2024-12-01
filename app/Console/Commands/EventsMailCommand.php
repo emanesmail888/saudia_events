@@ -8,6 +8,7 @@ use App\Models\Event;
 use App\Models\Region;
 use App\Models\City;
 use App\Models\Category;
+use App\Models\UserService;
 use App\Models\User;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -34,7 +35,7 @@ class EventsMailCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Send Email With All Interests And All Favourite Regions For Users Premuim Users With active Supscription';
 
     /**
      * Create a new command instance.
@@ -51,30 +52,70 @@ class EventsMailCommand extends Command
      *
      * @return int
      */
+   
+
     public function handle()
     {
-         // Get the current date as start_date
-         $start_date = Carbon::now()->toDateString();
+        // Get the current date as start_date
+        $start_date = Carbon::now()->toDateString();
 
-         // Calculate end_date by adding one week to start_date
-         $end_date = Carbon::parse($start_date)->addWeek()->toDateString();
+        // Calculate end_date by adding one week to start_date
+        $end_date = Carbon::parse($start_date)->addWeek()->toDateString();
 
-         // Query events between start_date and end_date
-         //  $events = Event::whereBetween('start_date', [$start_date, $end_date])->get();
-          $events = Event::where(function ($query) use ($start_date, $end_date) {
-              $query->whereBetween('start_date', [$start_date, $end_date])
-                  ->orWhere('duration', 'AllYear');
-          })->get();
+        $users = User::with(['categories', 'subcategories','regions'])
+            ->whereHas('services', function ($query) {
+                $query->whereRaw('JSON_CONTAINS(communication_channels, ?)', ['["email"]']);
+            })->get();
+            
 
-          $users = User::where('service_type', 'email')->get();
-          foreach ($users as $user) {
+        $batchSize = 10;
 
+        foreach ($users as $user) {
+            $userCategories = $user->categories;
+            $userRegions= $user->regions;
+            $userSubcategories = $user->subcategories;
+            $premiumSubscription = $user->supscriptions()->where('status', '=', 'active')->latest('created_at')->first();
+            if ($premiumSubscription != null) {
 
-           Mail::to($user->email)->send(new EventMail($events,$user));
-        //    $user->events()->attach($events->id, ['is_sent' => true]);
+                $events = Event::whereHas('region', function ($query) use ($userRegions) {
+                    $query->whereIn('id', $userRegions->pluck('id'));
+                })
+                ->whereHas('categories', function ($query) use ($userCategories) {
+                        $query->whereIn('id', $userCategories->pluck('id'));
+                })
+               
+                ->where(function ($query) use ($start_date, $end_date) {
+                    $query->whereBetween('start_date', [$start_date, $end_date])
+                    ->orWhere(function ($query) use ($start_date, $end_date) {
+                        $query->where('end_date', '>=', $start_date)
+                         ->whereBetween('end_date', [$start_date, $end_date])
+                         ->where('start_date','>=',$start_date);
+                    })
+                    ->orWhere('duration', 'AllYear');
+                        
+                                 
+                })
+                ->get();
+        
+              
 
+                $totalEvents = $events->count();
+                echo( $totalEvents);
+                //get all send events to specific user tp prevent it send again.
+                $sentEventIds = $user->events()->pluck('id')->toArray();
+                $unsentEventIds = $events->whereNotIn('id', $sentEventIds)->pluck('id')->toArray();
 
-          }
+                // Send the first 10 unsent events
+                $firstChunk = collect($unsentEventIds)->take($batchSize);
+                if (!$firstChunk->isEmpty()) {
+                    Mail::to($user->email)->send(new EventMail($events->whereIn('id', $firstChunk), $user));
+                    $user->events()->attach($firstChunk, ['is_sent' => true]);
+                }
+            }    
+        }
 
+        return 0;
     }
+
+   
 }

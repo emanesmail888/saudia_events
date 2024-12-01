@@ -13,6 +13,7 @@ class AdminAddCategoryComponent extends Component
 {
     use WithFileUploads;
     public $name;
+    public $name_ar;
     public $image;
     public $category_id;
 
@@ -26,6 +27,7 @@ class AdminAddCategoryComponent extends Component
 
         $this->validateOnly($fields,[
             'name'=>'required',
+            'name_ar'=>'required',
 
         ]);
 
@@ -33,11 +35,14 @@ class AdminAddCategoryComponent extends Component
     public function storeCategory(){
         $this->validate([
             'name'=>'required',
+            'name_ar'=>'required',
+
         ]);
         if($this->category_id)
         {
             $scategory=new Subcategory();
             $scategory->name=$this->name;
+            $scategory->name_ar=$this->name_ar;
             $scategory->category_id=$this->category_id;
             $imageName="";
             if($this->image){
@@ -51,6 +56,7 @@ class AdminAddCategoryComponent extends Component
         else{
         $category=new Category();
         $category->name=$this->name;
+        $category->name_ar=$this->name_ar;
         $imageName="";
         if($this->image){
         $imageName=Carbon::now()->timestamp.'.'.$this->image->getClientOriginalName();
@@ -61,6 +67,7 @@ class AdminAddCategoryComponent extends Component
         }
         session()->flash('message','Category has been created');
         $this->name="";
+        $this->name_ar="";
         $this->image="";
 
     }

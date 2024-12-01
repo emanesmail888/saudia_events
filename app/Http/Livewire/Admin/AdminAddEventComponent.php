@@ -17,6 +17,7 @@ class AdminAddEventComponent extends Component
 
     use WithFileUploads;
     public $event_name;
+    public $event_name_ar;
     public $event_details;
     public $start_date;
     public $end_date;
@@ -26,6 +27,7 @@ class AdminAddEventComponent extends Component
     public $event_type;
     public $url;
     public $location;
+    public $location_ar;
     public $conditions;
     public $event_image;
     public $duration;
@@ -57,6 +59,7 @@ class AdminAddEventComponent extends Component
 
         $this->validateOnly($fields,[
             'event_name'=>'required',
+            'event_name_ar'=>'required',
              'event_details'=>'required',
              'start_date'=>'required',
              'end_date'=>'required',
@@ -67,6 +70,8 @@ class AdminAddEventComponent extends Component
              'category_id'=>'required',
              'region_id'=>'required',
              'city_id'=>'required',
+             'location'=>'required',
+             'location_ar'=>'required',
              'event_start_price'=>'required',
 
 
@@ -81,6 +86,7 @@ class AdminAddEventComponent extends Component
     public function storeEvent(){
         $this->validate([
             'event_name'=>'required',
+            'event_name_ar'=>'required',
              'event_details'=>'required',
              'start_date'=>'required',
              'end_date'=>'required',
@@ -91,11 +97,14 @@ class AdminAddEventComponent extends Component
              'category_id'=>'required',
              'region_id'=>'required',
              'city_id'=>'required',
+             'location'=>'required',
+             'location_ar'=>'required',
              'event_start_price'=>'required',
 
         ]);
         $event=new Event();
         $event->event_name=$this->event_name;
+        $event->event_name_ar=$this->event_name_ar;
         $event->event_details=$this->event_details;
         $event->event_start_price=$this->event_start_price;
         $event->duration=$this->duration;
@@ -107,6 +116,7 @@ class AdminAddEventComponent extends Component
         $event->event_type=$this->event_type;
         $event->organizedBy=$this->organizedBy;
         $event->location=$this->location;
+        $event->location_ar=$this->location_ar;
         $event->url=$this->url;
         $event->zone_late=$this->zone_late;
         $event->zone_long=$this->zone_long;
@@ -129,6 +139,7 @@ class AdminAddEventComponent extends Component
         session()->flash('message','Event has been created successfully');
 
          $this-> event_name="";
+         $this-> event_name_ar="";
          $this-> event_details="";
          $this-> start_date="";
          $this-> end_date="";
@@ -138,6 +149,7 @@ class AdminAddEventComponent extends Component
          $this-> event_type="";
          $this-> url="";
          $this-> location="";
+         $this-> location_ar="";
          $this-> event_image="";
          $this-> duration="";
          $this-> category_id="";

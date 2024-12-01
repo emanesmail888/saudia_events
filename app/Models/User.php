@@ -30,7 +30,9 @@ class User extends Authenticatable
         'email',
         'password',
         'phone',
-        'region_id'
+        'region_id',
+        'google_id'
+
     ];
 
     /**
@@ -80,15 +82,37 @@ class User extends Authenticatable
 
     public function events(): BelongsToMany
     {
-        // return $this->belongsToMany(Event::class)->withTimestamps();
-        return $this->belongsToMany(Event::class,'user_events')->withPivot('is_sent')->withTimestamps();
+        //return $this->belongsToMany(Event::class,'user_events')->withPivot('is_sent')->withTimestamps();
+        return $this->belongsToMany(Event::class, 'user_events')
+        ->withPivot('is_sent', 'send_by_whats')
+        ->withTimestamps()
+        ->where('user_events.is_sent', true);
 
     }
 
-
-    public function subscription()
+    public function whats_events(): BelongsToMany
     {
-        return $this->hasOne(Subscription::class);
+        return $this->belongsToMany(Event::class, 'user_events')
+                    ->withPivot('is_sent', 'send_by_whats')
+                    ->withTimestamps()
+                    ->where('user_events.send_by_whats', true);
+    }
+
+    public function services()
+    {
+        return $this->belongsToMany(Service::class, 'user_services')
+            ->withPivot('communication_channels')
+            ->withTimestamps();
+    }
+
+
+    // public function subscription()
+    // {
+    //     return $this->hasOne(Subscription::class);
+    // }
+    public function supscriptions()
+    {
+        return $this->hasMany(Supscription::class);
     }
 
     public function plan()

@@ -12,6 +12,8 @@ use Symfony\Component\BrowserKit\HttpBrowser;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Support\Facades\DB;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
 
 class HallaYallaCommand extends Command
 {
@@ -27,7 +29,7 @@ class HallaYallaCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Scrape HallaYalla Site And Saved Scraped Data To Database ';
 
     /**
      * Create a new command instance.
@@ -48,8 +50,7 @@ class HallaYallaCommand extends Command
     {
         $client = new Client();
 
-        // $ajaxUrl = 'https://halayalla.com/_next/data/1e1d9fb4c177802e963669eb7af99bb93c6ce164/sa-ar/all-cities/experiences.json?lang=sa-en&location=all-cities&page=';
-        $ajaxUrl ='https://halayalla.com/_next/data/243191c4cbf047dd415557398fc62e5405488ddb/sa-ar/all-cities/experiences.json?lang=sa-ar&location=all-cities&page=';
+        $ajaxUrl ='https://halayalla.com/_next/data/3fda930df67ced800302481875c24591e9c26b08/sa-ar/all-cities/experiences.json?lang=sa-ar&location=all-cities&page=';
         $headers = [
             'X-Requested-With' => 'XMLHttpRequest',
         ];
@@ -71,14 +72,14 @@ class HallaYallaCommand extends Command
          for ($page = 1; $page <= $last_page; $page++)
          {
 
-            // $pageUrl = "https://halayalla.com/_next/data/1e1d9fb4c177802e963669eb7af99bb93c6ce164/sa-ar/all-cities/experiences.json?lang=sa-en&location=all-cities&page=$page";
-             $pageUrl = "https://halayalla.com/_next/data/243191c4cbf047dd415557398fc62e5405488ddb/sa-ar/all-cities/experiences.json?lang=sa-ar&location=all-cities&page=$page";
+             $pageUrl ="https://halayalla.com/_next/data/3fda930df67ced800302481875c24591e9c26b08/sa-en/all-cities/experiences.json?lang=sa-ar&location=all-cities&page=$page";
+
 
             $headers = [
                 'X-Requested-With' => 'XMLHttpRequest',
             ];
 
-            // For GET requests
+            // For GET requests of url.
             $response = $client->request('GET', $pageUrl, [
                 'headers' => $headers,
             ]);
@@ -117,23 +118,35 @@ class HallaYallaCommand extends Command
                  //get Category Slug
                  $cate = $event->category;
                  $category="";
+                 $category_ar="";
                   if($cate){
                     $category=$cate->slug;
+                    $category_ar = GoogleTranslate::trans($category,'ar');
+
 
                   }
                   else{
                     $category="experiences";
+                    $category_ar = GoogleTranslate::trans($category,'ar');
+
 
                   }
 
                 $webUrl = "https://halayalla.com/sa-ar/experiences/$city/$category/$slug";
                 $title = $event->name;
+                $title_ar=GoogleTranslate::trans($title,'ar');
+
 
                 // Lookup or create the category
                 $cat = Category::firstOrCreate(['name' => $category]);
+                $cat->name_ar = $category_ar;
+                $cat->save();
 
                 $hero_image = $event->venue_image;
+      
                 $location=$city."-".$region;
+                $location_ar=GoogleTranslate::trans($location,'ar');
+
 
                 $cityModel = City::where(function ($query) use ($city) {
                     $query->where('name_ar',  $city )
@@ -174,9 +187,6 @@ class HallaYallaCommand extends Command
                 $duration="AllYear";
 
                 $existingEvent = Event::where('event_name', $title)
-                    ->where('start_date', $start_date)
-                    ->where('end_date', $end_date)
-                    ->where('region_id', $regionId)
                     ->where('city_id', $cityId)
                     ->first();
 
@@ -187,6 +197,8 @@ class HallaYallaCommand extends Command
                     // Create a new Event instance
                     $event = new Event();
                     $event->event_name = $title;
+                    $event->event_name_ar = $title_ar;
+
                     $event->category_id = $cat->id;
                     $event->region_id = $regionId;
                     $event->city_id = $cityId;
@@ -200,6 +212,7 @@ class HallaYallaCommand extends Command
                     $event->end_time = $end_time;
                     $event->conditions = $new_note;
                     $event->location = $location;
+                    $event->location_ar = $location_ar;
                     $event->event_type = $event_type;
                     $event->duration = $duration;
                     $event->event_start_price = $price;

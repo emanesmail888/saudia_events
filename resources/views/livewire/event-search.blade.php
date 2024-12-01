@@ -5,13 +5,13 @@
                             <div class="row g-2">
                                 <div class="col-md-4">
                                     <input type="text" class="form-control border-0 py-3"
-                                        placeholder="Search Keyword" wire:model="search_keyword">
+                                        placeholder="{{ __('strings.Search Keyword') }}" wire:model="search_keyword">
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0 py-3" wire:model="category_id">
-                                        <option selected>Event Type</option>
+                                        <option selected>{{ __('strings.Event Type') }}</option>
                                         @foreach ($categories as $category)
-                                            <option value="{{ $category->id }}">{{ $category->name }}</option>
+                                            <option value="{{ $category->id }}">@if(app()->getLocale()=='ar'){{ $category->name_ar }} @else{{ $category->name }}@endif</option>
                                         @endforeach
 
                                         
@@ -21,22 +21,22 @@
                                 </div>
                                 <div class="col-md-4">
                                     <select class="form-select border-0 py-3"  wire:model="region_id">
-                                        <option selected>Location</option>
+                                        <option selected>{{ __('strings.Location') }}</option>
                                         @foreach ($regions as $region)
-                                            <option value="{{ $region->id }}">{{ $region->name_ar }}</option>
+                                            <option value="{{ $region->id }}"> @if(app()->getLocale()=='ar'){{ $region->name_ar }} @else{{ $region->name_en }}@endif</option>
                                         @endforeach
                                     </select>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-2">
-                            <button class="btn btn-dark border-0 w-100 py-3" wire:click="search">Search</button>
+                            <button class="btn btn-dark border-0 w-100 py-3" wire:click="search">{{ __('strings.Search') }}</button>
                         </div>
                     </div>
                 </div>
             @if ($this->getEvents() && count($this->getEvents()) > 0)
             <div class="mt-4">
-                <h2 class="text-xl font-bold mb-2">Search Results</h2>
+                <h2 class="text-xl font-bold mb-2">{{ __('strings.Search Results') }}</h2>
                 
                 <div class="container-xxl py-5">
                 <div class="container">
@@ -49,16 +49,16 @@
                                             src="{{$event->event_image}}" alt=""></a>
                                     <div
                                         class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">
-                                        {{ $event->category->name }}</div>
+                                        @if(app()->getLocale()=='ar'){{$event->categories->name_ar}} @else{{$event->categories->name}}@endif</div>
                                     <div
                                         class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">
                                         {{ $event->event_type }}</div>
                                 </div>
                                 <div class="p-4 pb-0">
-                                    <h5 class="text-info mb-3">{{ $event->event_name }}</h5>
+                                    <h5 class="text-info mb-3">@if(app()->getLocale()=='ar'){{$event->event_name_ar}} @else{{$event->event_name}}@endif</h5>
                                     <a class="d-block h5 mb-2"
                                         href="{{ $event->url }}">{{ $event->start_date }}</a>
-                                    <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{ $event->location }}
+                                    <p><i class="fa fa-map-marker-alt text-primary me-2"></i>@if(app()->getLocale()=='ar'){{$event->location_ar}} @else{{$event->location}}@endif
                                     </p>
                                 </div>
                                 <div class="d-flex border-top">

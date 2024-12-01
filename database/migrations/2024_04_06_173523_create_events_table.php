@@ -16,6 +16,7 @@ class CreateEventsTable extends Migration
         Schema::create('events', function (Blueprint $table) {
             $table->id();
             $table->string('event_name');
+            $table->string('event_name_ar')->nullable();
             $table->unsignedBigInteger('category_id');
             $table->unsignedBigInteger('region_id')->nullable();
             $table->unsignedBigInteger('city_id')->nullable();
@@ -28,6 +29,7 @@ class CreateEventsTable extends Migration
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->text('location')->nullable();
+            $table->text('location_ar')->nullable();
             $table->string('url')->nullable();
             $table->text('conditions')->nullable();
             $table->string('organizedBy')->nullable();

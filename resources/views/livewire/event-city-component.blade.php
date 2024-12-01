@@ -3,9 +3,10 @@
         <div class="row g-0 gx-5 align-items-end">
             <div class="col-lg-6">
                 <div class="text-start mx-auto mb-5 wow slideInLeft" data-wow-delay="0.1s">
-                    <h1 class="mb-3">All Events</h1>
-                    <p>All Events in <span class=" text-info">{{$city->name_ar}}</span>. in Saudia Arabia.</p>
+                <h1 class="mb-3">{{ __('strings.All Events') }}</h1>
+                    <p>{{ __('strings.All Events in') }} <span class=" text-info">@if(app()->getLocale()=='ar'){{$city->name_ar}} @else{{$city->name_en}}@endif</span>.{{ __('strings.in Saudia Arabia') }} .</p>
                 </div>
+                   
             </div>
 
         </div>
@@ -16,13 +17,13 @@
                         <div class="property-item rounded overflow-hidden">
                             <div class="position-relative overflow-hidden">
                                 <a href="{{$event_city->url}}"><img class="img-fluid" src="{{$event_city->event_image}}" alt=""></a>
-                                <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">{{$event_city->category->name}}</div>
+                                <div class="bg-primary rounded text-white position-absolute start-0 top-0 m-4 py-1 px-3">@if(app()->getLocale()=='ar'){{$event_city->categories->name_ar}} @else{{$event_city->categories->name}}@endif</div>
                                 <div class="bg-white rounded-top text-primary position-absolute start-0 bottom-0 mx-4 pt-1 px-3">{{$event_city->event_type}}</div>
                             </div>
                             <div class="p-4 pb-0">
-                                <h5 class="text-primary mb-3">{{$event_city->event_name}}</h5>
+                                <h5 class="text-primary mb-3">@if(app()->getLocale()=='ar'){{$event_city->event_name_ar}} @else{{$event_city->event_name}}@endif</h5>
                                 <a class="d-block h5 mb-2" href="">{{$event_city->start_date}}</a>
-                                <p><i class="fa fa-map-marker-alt text-primary me-2"></i>{{$event_city->location}}</p>
+                                <p><i class="fa fa-map-marker-alt text-primary me-2"></i>@if(app()->getLocale()=='ar'){{$event_city->location_ar}} @else{{$event_city->location}}@endif</p>
                             </div>
                             <div class="d-flex border-top">
                                 <small class="flex-fill text-center border-end py-2"><i class="fa fa-clock text-primary me-2"></i>{{$event_city->start_time}}</small>

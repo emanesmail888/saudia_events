@@ -2,12 +2,12 @@
     <div class="row mt-4 panel-heading d-flex mb-4">
           <div class="col-md-6">
               <h4 class=" px-4 text-lg font-semibold text-gray-600">
-                 All Categories
+              {{ __('strings.All Categories') }}
               </h4>
           </div>
 
           <div class="col-md-6 text-end">
-             <a href="{{route('admin.addCategory')}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">add Category</a>
+             <a href="{{route('admin.addCategory')}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">{{ __('strings.add Category') }}</a>
 
           </div>
 
@@ -27,10 +27,10 @@
                                 <table id="data-table-basic" class="table table-striped">
                                     <thead>
                                     <tr>
-                                    <th class="px-4 py-3">Id</th>
-                                    <th class="px-4 py-3">Name</th>
-                                    <th class="px-4 py-3">subcategory_Name</th>
-                                    <th class="px-4 py-3">Actions</th>
+                                    <th class="px-4 py-3">{{ __('strings.Id') }}</th>
+                                    <th class="px-4 py-3">{{ __('strings.Name') }}</th>
+                                    <th class="px-4 py-3">{{ __('strings.subcategory_Name') }}</th>
+                                    <th class="px-4 py-3">{{ __('strings.Actions') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -39,7 +39,7 @@
                                         
                                         <td> {{$category->id}}</td>
                                        
-                                        <td>{{$category->name}}</td>
+                                        <td>@if(app()->getLocale()=='ar') {{$category->name_ar}} @else{{$category->name}}@endif</td>
                                         <td> 
                                             <ul class="sclist">
                                                 @foreach ($category->subCategories as $scategory)
@@ -65,10 +65,10 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                         <th class="px-4 py-3">Id</th>
-                                         <th class="px-4 py-3">Name</th>
-                                         <th class="px-4 py-3">subcategory_Name</th>
-                                          <th class="px-4 py-3">Actions</th>
+                                        <th class="px-4 py-3">{{ __('strings.Id') }}</th>
+                                        <th class="px-4 py-3">{{ __('strings.Name') }}</th>
+                                        <th class="px-4 py-3">{{ __('strings.subcategory_Name') }}</th>
+                                        <th class="px-4 py-3">{{ __('strings.Actions') }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

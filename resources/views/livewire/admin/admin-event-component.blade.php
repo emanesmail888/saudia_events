@@ -2,12 +2,12 @@
     <div class="row mt-4 panel-heading d-flex mb-4">
           <div class="col-md-6">
               <h4 class=" px-4 text-lg font-semibold text-gray-600">
-                  All Events
+              {{ __('strings.All Events') }}
             </h4>
           </div>
 
           <div class="col-md-6 text-end">
-              <a href="{{route('admin.addEvent')}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">add Event</a>
+              <a href="{{route('admin.addEvent')}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">{{ __('strings.add Event') }}</a>
 
           </div>
 
@@ -27,11 +27,11 @@
                                 <table id="data-table-basic" class="table table-striped">
                                     <thead>
                                     <tr>
-                                      <th>Title</th>
-                                      <th>Price</th>
-                                      <th>Time</th>
-                                      <th>Date</th>
-                                      <th>Actions</th>
+                                      <th>{{ __('strings.Title') }}</th>
+                                      <th>{{ __('strings.Price') }}</th>
+                                      <th>{{ __('strings.Time') }}</th>
+                                      <th>{{ __('strings.Date') }}</th>
+                                      <th>{{ __('strings.Actions') }}</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -43,8 +43,8 @@
                                               <img src="{{ $event->event_image }}" alt="{{ $event->event_name }}" class="rounded-circle" style="width: 32px; height: 32px;">
                                             </div>
                                             <div>
-                                              <p class="mb-0 fw-semibold">{{ $event->event_name }}</p>
-                                              <p class="mb-0 text-muted">{{ $event->region ? $event->region['name_en'] : 'Saudi Arabia' }} {{ $event->city ? '-' . $event->city['name_en'] : '' }}</p>
+                                              <p class="mb-0 fw-semibold">@if(app()->getLocale()=='ar'){{ $event->event_name_ar }}@else {{ $event->event_name }} @endif</p>
+                                              <p class="mb-0 text-muted">@if(app()->getLocale()=='ar') {{ $event->region ? $event->region['name_ar'] : 'المملكة العربية السعودية' }} {{ $event->city ? '-' . $event->city['name_ar'] : '' }} @else{{ $event->region ? $event->region['name_en'] : 'Saudi Arabia' }} {{ $event->city ? '-' . $event->city['name_en'] : '' }}@endif</p>
                                             </div>
                                           </div>
                                         </td>
@@ -65,11 +65,11 @@
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                          <th>Title</th>
-                                          <th>Price</th>
-                                          <th>Time</th>
-                                          <th>Date</th>
-                                          <th>Actions</th>
+                                        <th>{{ __('strings.Title') }}</th>
+                                        <th>{{ __('strings.Price') }}</th>
+                                        <th>{{ __('strings.Time') }}</th>
+                                        <th>{{ __('strings.Date') }}</th>
+                                        <th>{{ __('strings.Actions') }}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
