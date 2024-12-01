@@ -17,6 +17,7 @@ class CreateUserEventsTable extends Migration
             $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('event_id');
             $table->boolean('is_sent')->default(false);
+            $table->boolean('send_by_whats')->default(false);
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('event_id')->references('id')->on('events')->onDelete('cascade');
             $table->timestamps();

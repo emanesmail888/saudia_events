@@ -14,6 +14,10 @@ use DOMXPath;
 use Symfony\Component\DomCrawler\Crawler;
 use Symfony\Component\BrowserKit\HttpBrowser;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\DB;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
+
 
 class ScrapeEventbriteSiteCommand extends Command
 {
@@ -83,16 +87,19 @@ class ScrapeEventbriteSiteCommand extends Command
 
             $crawler->filter('ul li .discover-search-desktop-card .event-card  .event-card-details .Stack_root__1ksk7 ')
             ->each(function (Crawler $node) use (&$results) {
-            $title = $node->filter('a h2')->text();
-            // $category = $node->filter('[data-event-category]')->attr('data-event-category');
+            $title = $node->filter('a h3')->text();
+            $title_ar=GoogleTranslate::trans($title,'ar');
             $category = '';
+            $category_ar = '';
             $nodes = $node->filter('[data-event-category]');
 
             if ($nodes->count() > 0) {
                 $category = $nodes->attr('data-event-category');
+                $category_ar = GoogleTranslate::trans($category,'ar');
             }
             else{
                 $category = "conferences";
+                $category_ar = GoogleTranslate::trans($category,'ar');
 
             }
             $regionAndCity = $node->filter('[data-event-location]')->attr('data-event-location');
@@ -117,11 +124,7 @@ class ScrapeEventbriteSiteCommand extends Command
 
             if ($imageElements->length > 0) {
                 $imageSrc = $imageElements->item(0)->getAttribute('src');
-                // if($imageSrc=="")
-                // {
-                //     $imgSrc="https://img.evbuc.com/https%3A%2F%2Fcdn.evbuc.com%2Fimages%2F99972336%2F438776807040%2F1%2Foriginal.20200501-153541?w=1024&amp;auto=format%2Ccompress&amp;q=75&amp;sharp=10&amp;s=c1f6a658d165a434244577be2a765309";
-
-                // }
+                
             }
 
             // Scrape the content of <p> tags details from the details page
@@ -167,8 +170,11 @@ class ScrapeEventbriteSiteCommand extends Command
 
             $locationElement=$xpath->query("//div[contains(@class, 'location-info__address')]");
             $location = '';
+            $location_ar = '';
             if ($locationElement->length > 0) {
                 $location = $locationElement->item(0)->textContent;
+                $location_ar=GoogleTranslate::trans($location,'ar');
+
             }
 
 
@@ -184,6 +190,8 @@ class ScrapeEventbriteSiteCommand extends Command
 
             // Lookup or create the category
             $cat = Category::firstOrCreate(['name' => $category]);
+            $cat->name_ar = $category_ar;
+            $cat->save();
 
             // Split the $regionAndCity into city and region
             $parts = explode(',', $regionAndCity);
@@ -203,12 +211,9 @@ class ScrapeEventbriteSiteCommand extends Command
             $cityId = $cityModel ? $cityModel->id : null;
             $regionId = $regionModel ? $regionModel->id : null;
 
-            $existingEvent = Event::where('event_name', $title)
-                ->where('region_id', $regionId)
-                ->where('city_id', $cityId)
-                ->where('start_date', $start_date)
-                ->where('end_date', $end_date)
-                ->first();
+           
+            $existingEvent = Event::where('event_name', $title)->first();
+
 
             if (!$existingEvent) {
 
@@ -217,13 +222,13 @@ class ScrapeEventbriteSiteCommand extends Command
                  // Create a new Event instance
                  $event = new Event();
                  $event->event_name = $title;
+                 $event->event_name_ar = $title_ar;
                  $event->category_id = $cat->id;
                  $event->region_id = $regionId; // Set the region ID
                  $event->city_id = $cityId; // Set the city ID
                  if($imageSrc=="")
                  {
                     $event->event_image="https://th.bing.com/th/id/OIP.1CnzXBrrkXjKwwDzjxCXZAHaEY?rs=1&pid=ImgDetMain";
-
 
                  }
                  else{
@@ -235,6 +240,7 @@ class ScrapeEventbriteSiteCommand extends Command
                  $event->organizedBy = $organizationBy;
                  $event->url = $detailsUrl;
                  $event->location = $location;
+                 $event->location_ar = $location_ar;
                  $event->start_date = $start_date;
                  $event->end_date = $end_date;
                  $event->start_time =$start_time ;
@@ -248,16 +254,9 @@ class ScrapeEventbriteSiteCommand extends Command
                 if($end_date !== null)
                 {
                     $end_date=Carbon::parse($end_date);
-                    $current_date = Carbon::parse($start_date);
+                    $current_date = Carbon::parse($start_date->addDay());
 
                     while ($current_date < $end_date ) {
-
-                        $existing = Event::where('event_name', $title)
-                        ->where('start_date', $current_date)
-                        ->where('end_date', $end_date)
-                        ->first();
-
-                        if (!$existing) {
 
                             // Create a new Event instance
                             $event = new Event();
@@ -265,13 +264,14 @@ class ScrapeEventbriteSiteCommand extends Command
                             $event->category_id = $cat->id;
                             $event->region_id = $regionId; // Set the region ID
                             $event->city_id = $cityId; // Set the city ID
-                            $event->event_image = $imageSrc;
+                            $event->event_image = $imageSrc ?: "https://th.bing.com/th/id/OIP.1CnzXBrrkXjKwwDzjxCXZAHaEY?rs=1&pid=ImgDetMain";
                             // Convert the array to a JSON string
                             $event->event_details = json_encode($detailsContent);
                             $event->organizedBy = $organizationBy;
                             $event->url = $detailsUrl;
                             $event->location = $location;
-                            $event->start_date = $end_date;
+                            $event->location_ar = $location_ar;
+                            $event->start_date =$current_date;
                             $event->end_date = $end_date ;
                             $event->start_time =$start_time ;
                             $event->end_time = $end_time;
@@ -279,7 +279,7 @@ class ScrapeEventbriteSiteCommand extends Command
                             $event->event_start_price = $price;
                             // Save the event to the database
                             $event->save();
-                        }
+                       
                      $current_date->addDay();
 
 
@@ -472,4 +472,8 @@ class ScrapeEventbriteSiteCommand extends Command
 
 
     }
+
+
+
 }
+

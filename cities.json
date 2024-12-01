@@ -676,7 +676,7 @@
       "id": 113,
       "region_id": 5,
       "name_ar": "الجبيل",
-      "name_en": "Al Jubail"
+      "name_en": "Jubail"
     },
     {
       "id": 114,
@@ -2476,7 +2476,7 @@
       "id": 413,
       "region_id": 1,
       "name_ar": "البحرة",
-      "name_en": "Al Baharah"
+      "name_en": "Al Bahrah"
     },
     {
       "id": 414,
@@ -6808,7 +6808,7 @@
       "id": 1138,
       "region_id": 2,
       "name_ar": "البحول",
-      "name_en": "Al Bahawal"
+      "name_en": "Al Bahwal"
     },
     {
       "id": 1139,
@@ -7708,7 +7708,7 @@
       "id": 1288,
       "region_id": 6,
       "name_ar": "الأحسر",
-      "name_en": "Al Ahsar"
+      "name_en": "Al Ahsr"
     },
     {
       "id": 1289,
@@ -9226,7 +9226,7 @@
       "id": 1542,
       "region_id": 12,
       "name_ar": "الباحة",
-      "name_en": "Bahah"
+      "name_en": "Al Baha"
     },
     {
       "id": 1543,
@@ -11524,7 +11524,7 @@
       "id": 1925,
       "region_id": 2,
       "name_ar": "المبيرز",
-      "name_en": "Al Mubayriz"
+      "name_en": "AlMubarraz"
     },
     {
       "id": 1926,
@@ -16420,7 +16420,7 @@
       "id": 2748,
       "region_id": 5,
       "name_ar": "المبرز",
-      "name_en": "Al Mubarraz"
+      "name_en": "Al Mubarraz "
     },
     {
       "id": 2749,
@@ -21933,7 +21933,7 @@
     {
       "id": 3677,
       "region_id": 5,
-      "name_ar": "الاحساء",
+      "name_ar": "الأحساء",
       "name_en": "Al Ahsa"
     },
     {
@@ -27485,5 +27485,41 @@
       "region_id": 8,
       "name_ar": "السياييل",
       "name_en": "Al Sayayil"
+    },
+   
+    {
+      "id": 23696,
+      "region_id": 3,
+      "name_ar": "المدينة المنورة",
+      "name_en": "Madinah"
+    },
+    {
+      "id": 23697,
+      "region_id": 2,
+      "name_ar": "مدينة الملك عبدالله الاقتصادية",
+      "name_en": "King Abdullah Economic City"
+    }, {
+      "id": 23698,
+      "region_id": 5,
+      "name_ar": "الأحساء",
+      "name_en": "Alahsa"
+    }, {
+      "id": 23699,
+      "region_id": 7,
+      "name_ar": "تبوك",
+      "name_en": "Tabouk"
+    },
+    {
+      "id": 32700,
+      "region_id": 5,
+      "name_ar": "الخبر",
+      "name_en": "khobar"
+    },
+    {
+      "id": 32701,
+      "region_id": 2,
+      "name_ar": "مكة",
+      "name_en": "makkah"
     }
+    
   ]

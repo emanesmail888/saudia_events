@@ -20,7 +20,7 @@ class InsertRegionsCommand extends Command
      *
      * @var string
      */
-    protected $description = 'insert regions from json';
+    protected $description = 'insert regions from json file to database.';
 
     /**
      * Create a new command instance.

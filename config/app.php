@@ -81,6 +81,9 @@ return [
     */
 
     'locale' => 'en',
+    'available_locales'=>[
+        'en','ar','fr'
+    ],
 
     /*
     |--------------------------------------------------------------------------
@@ -164,6 +167,7 @@ return [
         Gloudemans\Shoppingcart\ShoppingcartServiceProvider::class,
         Collective\Html\HtmlServiceProvider::class,
         Cartalyst\Stripe\Laravel\StripeServiceProvider::class,
+        Laravel\Socialite\SocialiteServiceProvider::class,
 
 
 
@@ -240,6 +244,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Stripe' => Cartalyst\Stripe\Laravel\Facades\Stripe::class,
+        'Socialite' => Laravel\Socialite\Facades\Socialite::class,
 
 
         // 'Carbon' => 'Carbon\Carbon'

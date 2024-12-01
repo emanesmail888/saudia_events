@@ -5,6 +5,8 @@ use App\Models\Event;
 use App\Models\Category;
 use GuzzleHttp\Client;
 use Carbon\Carbon;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
 
 use Illuminate\Console\Command;
 
@@ -41,27 +43,37 @@ class ScrapeSaudiEventCommand extends Command
      */
     public function handle()
     {
+        
+
         $client = new Client();
-        // The URL of the category request
-        $CategoryUrl = 'https://cpass.saudievents.sa/api/interests?lang=en';
-
-        $headers = [
-            'X-Requested-With' => 'XMLHttpRequest',
-        ];
-
         // For GET requests
-        $category_response = $client->request('GET', $CategoryUrl, [
-            'headers' => $headers,
-        ]);
-         // The body of the response is typically JSON
-         $category_content = $category_response->getBody()->getContents();
-         $category_data = json_decode($category_content);
+        for ($i=0; $i <=3 ; $i++) { 
+            // The URL of the category request
+            $CategoryUrl = 'https://cpass.saudievents.sa/api/interests?lang=en';
 
-         $categories = $category_data->data;
-         // Lookup or create the category
-         foreach ($categories as $category) {
-         $category = Category::firstOrCreate(['name' => $category->name]);
-         }
+            $headers = [
+                'X-Requested-With' => 'XMLHttpRequest',
+            ];
+
+       
+        
+            $category_response = $client->request('GET', $CategoryUrl, [
+                'headers' => $headers,
+            ]);
+            // The body of the response is typically JSON
+            $category_content = $category_response->getBody()->getContents();
+            $category_data = json_decode($category_content);
+
+            $categories = $category_data->data;
+            // Lookup or create the category
+            foreach ($categories as $category) {
+            $category = Category::firstOrCreate(['name' => $category->name]);
+            $category_ar = GoogleTranslate::trans($category->name,'ar');
+
+            $category->name_ar = $category_ar;
+            $category->save();
+            }
+        }
 
         // The URL of the AJAX request
         $ajaxUrl = 'https://cpass.saudievents.sa/api/getevents?lang=en&interests%5B%5D=&zone_id=&season_id=&title=&date=';
@@ -97,9 +109,13 @@ class ScrapeSaudiEventCommand extends Command
 
             }
             $title = $event->title;
+            $title_ar=GoogleTranslate::trans($title,'ar');
+
             $category = $event->category;
             $price = $event->price_from;
             $zone = $event->zone;
+            $zone_ar = GoogleTranslate::trans($zone,'ar');
+
             $hero_image = $event->hero_image;
             $description = $event->description;
             $interests = $event->interests;
@@ -127,10 +143,7 @@ class ScrapeSaudiEventCommand extends Command
             $new_note = $event->new_note;
             $hours = $event->hours;
 
-            $existingEvent = Event::where('event_name', $title)
-                ->where('start_date', $start_date)
-                ->where('end_date', $end_date)
-                ->first();
+            $existingEvent = Event::where('event_name', $title)->first();
 
             if (!$existingEvent) {
                 $current_date = Carbon::parse($start_date);
@@ -141,11 +154,14 @@ class ScrapeSaudiEventCommand extends Command
 
                     $event = new Event();
                     $event->event_name = $title;
+                    $event->event_name_ar = $title_ar;
+
                     $event->category_id = $category_id;
                     $event->event_image = $hero_image;
                     $event->event_details = json_encode($description);
                     $event->url = $webUrl;
                     $event->location = $zone;
+                    $event->location_ar = $zone_ar;
                     $event->start_date = $start_date;
                     $event->end_date = $end_date;
                     $event->start_time = $start_time;
@@ -154,35 +170,35 @@ class ScrapeSaudiEventCommand extends Command
                     $event->zone_late = $zone_late;
                     $event->zone_long = $zone_long;
                     $event->event_type = $event_type;
+                    // $event->duration = $duration?:$hours;
                     $event->duration = $hours;
                     $event->event_start_price = $price;
                     $event->save();
                 }
                 if($end_date !== null)
-                {
+                {   
                     $end_date=Carbon::parse($end_date);
-                    $current_date = Carbon::parse($start_date);
+                    
+                    $current_date = Carbon::parse($start_date)->addWeek();
 
 
                     while ($current_date <= $end_date ) {
 
-                        $existing = Event::where('event_name', $title)
-                        ->where('start_date', $current_date)
-                        ->where('end_date', $end_date)
-                        ->first();
-
-                        if (!$existing) {
+                        $existing = Event::where('event_name', $title)->first();
+                        // if (!$existing) {
                             foreach ($category as $c) {
                                 $cat = Category::findOrFail($c);
                                 $category_id = $cat->id;
 
                                 $event = new Event();
                                 $event->event_name = $title;
+                                $event->event_name_ar = $title_ar;
                                 $event->category_id = $category_id;
                                 $event->event_image = $hero_image;
                                 $event->event_details = json_encode($description);
                                 $event->url = $webUrl;
                                 $event->location = $zone;
+                                $event->location_ar = $zone_ar;
                                 $event->start_date = $current_date;
                                 $event->end_date = $end_date;
                                 $event->start_time = $start_time;
@@ -195,9 +211,9 @@ class ScrapeSaudiEventCommand extends Command
                                 $event->event_start_price = $price;
                                 $event->save();
                             }
-                        }
+                        //}
 
-                     $current_date->addDay();
+                     $current_date->addWeek();
 
 
                     }
@@ -222,6 +238,7 @@ class ScrapeSaudiEventCommand extends Command
         $end_date="";
         $end_time="";
         $start_time="";
+        $duration="";
 
         //"<p>10 PM - 1 AM</p>";
         // Extract start and end times
@@ -254,7 +271,17 @@ class ScrapeSaudiEventCommand extends Command
         //date = "From 1 Dec";
         //date = "1 Dec";
 
-        if(preg_match('/From (\d+ [A-Za-z]+)/', $date, $matches)||preg_match('/(\d+ [A-Za-z]+)/', $date, $matches))
+        // Extract start and end dates
+        $dates = explode(" - ", $date);
+
+        if ((isset($dates[1]) )) {
+            // Extract the start and end dates from the given date range
+            $start_date = Carbon::createFromFormat('d M', $dates[0])->format('Y-m-d');
+            $end_date = Carbon::createFromFormat('d M', $dates[1])->format('Y-m-d');
+
+        }
+
+        elseif(preg_match('/From (\d+ [A-Za-z]+)/', $date, $matches)||preg_match('/(\d+ [A-Za-z]+)/', $date, $matches))
         {
             $start_date = Carbon::createFromFormat('d M', $matches[1])->format('Y-m-d');
             $end_date = Carbon::createFromFormat('Y-m-d', $start_date)->addDay()->format('Y-m-d');
@@ -269,7 +296,8 @@ class ScrapeSaudiEventCommand extends Command
              $start_date = $currentDate->format('Y-m-d');
 
              // Loop until the end of the current month
-             $end_date = $currentDate->endOfMonth()->format('Y-m-d');
+             $end_date = $currentDate->addDay()->format('Y-m-d');
+            //  $duration="AllYear";
 
 
         }else
@@ -284,14 +312,20 @@ class ScrapeSaudiEventCommand extends Command
                 $start_date = $currentDate->format('Y-m-d');
 
                 // Loop until the end of the current month
-                $end_date = $currentDate->endOfMonth()->format('Y-m-d');
-            } else {
-                // Extract start and end dates
-                $dates = explode(" - ", $date);
-                // Extract the start and end dates from the given date range
-                $start_date = Carbon::createFromFormat('d M', $dates[0])->format('Y-m-d');
-                $end_date = Carbon::createFromFormat('d M', $dates[1])->format('Y-m-d');
+                $end_date = $currentDate->addWeek()->format('Y-m-d');
+                // $duration="AllYear";
+
+
             }
+            //  else {
+            //     // Extract start and end dates
+            //     $dates = explode(" - ", $date);
+            //     // Extract the start and end dates from the given date range
+            //     $start_date = Carbon::createFromFormat('d M', $dates[0])->format('Y-m-d');
+            //     $end_date = Carbon::createFromFormat('d M', $dates[1])->format('Y-m-d');
+            //     $duration="AllYear";
+
+            // }
 
 
 

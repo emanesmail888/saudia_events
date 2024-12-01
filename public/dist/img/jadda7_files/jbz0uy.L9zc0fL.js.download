@@ -1,1 +1,0 @@
-(this.$WP=this.$WP||[]).push(["jbz0uy",(t,r)=>{var s,a=({x:t=0,y:r=0,children:a})=>s("div",{style:{transform:`translate(${t}px, ${r}px)`},children:a});return[()=>{t("default",a)},[t=>s=t.jsx]]},["21h32l"]]);

@@ -8,13 +8,13 @@
 
             <div class="col-md-6">
                 <h4 class=" px-4 text-lg font-semibold text-gray-600">
-                Edit Category
+                {{ __('strings.Edit Category') }}
 
                 </h4>
             </div>
 
             <div class="col-md-6 text-end">
-              <a href="{{route('admin.categories')}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">all categories</a>
+              <a href="{{route('admin.categories', ['locale' => App::getLocale()])}}" class="btn btn-primary font-medium rounded-lg ml-auto text-sm mb-1  px-5 text-center  pull-right">{{ __('strings.all categories') }}</a>
 
             </div>
         </div>
@@ -34,21 +34,31 @@
              <div class="row g-3">
                 <div class="col-12">
                     <div class="form-floating">
-                    <input type="text" name="name" placeholder="Category Name" id=""  class="block mt-1 w-full form-control" wire:model="name" />
+                    <input type="text" name="name" placeholder="{{ __('strings.Category Name') }}" id=""  class="block mt-1 w-full form-control" wire:model="name" />
                         @error('name')
                         <p class="text-xs text-red-600">{{$message}}</p>
 
                         @enderror
-                    <label for="email">Category Name</label>
+                    <label for="name">{{ __('strings.Category Name') }}</label>
+                    </div>
+                </div>
+                <div class="col-12">
+                    <div class="form-floating">
+                    <input type="text" name="name_ar" placeholder="{{ __('strings.Category Name Arabic') }}" id=""  class="block mt-1 w-full form-control" wire:model="name_ar" />
+                        @error('name_ar')
+                        <p class="text-xs text-red-600">{{$message}}</p>
+
+                        @enderror
+                    <label for="name_ar">{{ __('strings.Category Name Arabic') }}</label>
                     </div>
                 </div>
 
                 <div class="col-12">
                     <div class="form-floating">
                         <select name="" id=""  class="block mt-1 w-full form-control" wire:model="category_id">
-                            <option value="">Non</option>
+                            <option value="">{{ __('strings.Non') }}</option>
                             @foreach ($categories as $category)
-                            <option value="{{$category->id}}">{{$category->name}}</option>
+                            <option value="{{$category->id}}">@if(app()->getLocale()=='ar') {{$category->name_ar}} @else{{$category->name}}@endif</option>
 
                             @endforeach
                         </select>
@@ -56,7 +66,7 @@
                         <p class="text-danger">{{$message}}</p>
 
                         @enderror
-                    <label for="category_id"> Parent Category Name</label>
+                    <label for="category_id"> {{ __('strings.Parent Category Name') }}</label>
                     </div>
                 </div>
 
@@ -72,12 +82,12 @@
                                 @else
                                 <img src="{{asset('dist/images/categories')}}/{{$image}}" alt="">
                                 @endif
-                        <label for="image"> Image</label>
+                        <label for="image">{{ __('strings.Image') }} </label>
                     </div>
                 </div>
 
                 <div class="col-12">
-                    <input type="submit" value="Update Category" class="btn btn-primary block w-100 py-3">
+                    <input type="submit" value="{{ __('strings.Update Category') }}" class="btn btn-primary block w-100 py-3">
 
                 </div>
 

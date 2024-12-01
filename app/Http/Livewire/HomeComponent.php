@@ -7,7 +7,7 @@ use App\Models\Category;
 use App\Models\Region;
 use App\Models\City;
 use App\Models\Event;
-use App\Models\Plan;
+use App\Models\Service;
 
 class HomeComponent extends Component
 {
@@ -22,7 +22,7 @@ class HomeComponent extends Component
         $riyad_events = Event::where('city_id', '=', $riyad_city_id)->get()->take(9);
         $diriah_city_id = City::where('name_ar', '=', 'الدرعية')->first()->id;
         $diriah_events = Event::where('city_id', '=', $diriah_city_id)->get()->take(9);
-        $plans=Plan::cursor();
+        $services=Service::cursor();
         $experiences_events = Event::where('duration', 'AllYear')->get();
 
 
@@ -36,7 +36,7 @@ class HomeComponent extends Component
         'riyad_city_id'=>$riyad_city_id,
         'jaddah_city_id'=>$jaddah_city_id,
         'diriah_city_id'=>$diriah_city_id,
-        'plans'=>$plans,
+        'services'=>$services,
         'experiences_events'=>$experiences_events,
         ])->layout('layouts.home');
     }

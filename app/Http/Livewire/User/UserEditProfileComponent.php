@@ -36,6 +36,7 @@ class UserEditProfileComponent extends Component
     public function updateProfile(){
         $user=User::find(Auth::user()->id);
         $user->name=$this->name;
+        $user->phone=$this->mobile;
         $user->save();
         $user->profile->mobile=$this->mobile;
         $user->profile->address=$this->address;

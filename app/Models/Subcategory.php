@@ -13,7 +13,7 @@ class Subcategory extends Model
 {
     use HasFactory;
     protected $table="subcategories";
-    protected $fillable = ['name','image','category_id'];
+    protected $fillable = ['name','image','category_id','name_ar'];
 
 
 

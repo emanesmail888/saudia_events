@@ -18,6 +18,7 @@ class AdminEditEventComponent extends Component
 
     use WithFileUploads;
     public $event_name;
+    public $event_name_ar;
     public $event_details;
     public $start_date;
     public $end_date;
@@ -27,6 +28,7 @@ class AdminEditEventComponent extends Component
     public $event_type;
     public $url;
     public $location;
+    public $location_ar;
     public $conditions;
     public $event_image;
     public $duration;
@@ -56,6 +58,7 @@ class AdminEditEventComponent extends Component
 
         $this->event_details=$event->event_details;
         $this->event_name=$event->event_name;
+        $this->event_name_ar=$event->event_name_ar;
         $this->event_start_price=$event->event_start_price;
         $this->duration=$event->duration;
         $this->conditions=$event->conditions;
@@ -68,6 +71,7 @@ class AdminEditEventComponent extends Component
         $this->end_date=$event->end_date;
         $this->organizedBy=$event->organizedBy;
         $this->location=$event->location;
+        $this->location_ar=$event->location_ar;
         $this->url=$event->url;
         $this->zone_late=$event->zone_late;
         $this->zone_long=$event->zone_long;
@@ -102,6 +106,8 @@ class AdminEditEventComponent extends Component
             'region_id'=>'required',
             'city_id'=>'required',
             'event_start_price'=>'required',
+            'location'=>'required',
+            'location_ar'=>'required',
 
 
         ]);
@@ -123,10 +129,13 @@ class AdminEditEventComponent extends Component
             'region_id'=>'required',
             'city_id'=>'required',
             'event_start_price'=>'required',
+            'location'=>'required',
+            'location_ar'=>'required',
 
         ]);
         $event=Event::find($this->event_id);
         $event->event_name=$this->event_name;
+        $event->event_name_ar=$this->event_name_ar;
         $event->event_details=$this->event_details;
         $event->event_start_price=$this->event_start_price;
         $event->duration=$this->duration;
@@ -138,6 +147,7 @@ class AdminEditEventComponent extends Component
         $event->event_type=$this->event_type;
         $event->organizedBy=$this->organizedBy;
         $event->location=$this->location;
+        $event->location_ar=$this->location_ar;
         $event->url=$this->url;
         $event->zone_late=$this->zone_late;
         $event->zone_long=$this->zone_long;
@@ -158,6 +168,7 @@ class AdminEditEventComponent extends Component
 
         session()->flash('message','Event has been updated successfully');
         $this-> event_name="";
+        $this-> event_name_ar="";
         $this-> event_details="";
         $this-> start_date="";
         $this-> end_date="";
@@ -167,6 +178,7 @@ class AdminEditEventComponent extends Component
         $this-> event_type="";
         $this-> url="";
         $this-> location="";
+        $this-> location_ar="";
         $this-> event_image="";
         $this-> duration="";
         $this-> category_id="";

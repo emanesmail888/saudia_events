@@ -20,10 +20,11 @@ class CreateUsersTable extends Migration
             $table->string('name');
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
-            $table->string('password');
-            $table->string('phone');
-            $table->enum('service_type', ['whatsapp', 'email','admin'])->default('whatsapp');
-            $table->unsignedBigInteger('region_id');
+            $table->text('password');
+            $table->string('phone')->nullable();
+            $table->string('google_id')->nullable();
+            // $table->enum('service_type', ['whatsapp', 'email','admin'])->default('whatsapp');
+            $table->unsignedBigInteger('region_id')->default(1);
             $table->string('utype')->default('USR')->comment('ADM For Admin and USR For User or Customer');
             $table->rememberToken();
             $table->foreignId('current_team_id')->nullable();

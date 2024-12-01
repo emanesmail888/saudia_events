@@ -9,6 +9,10 @@ use App\Models\Category;
 use App\Models\Event;
 use App\Models\Region;
 use App\Models\City;
+use App\Models\Subcategory;
+use Stichoza\GoogleTranslate\GoogleTranslate;
+
+
 use DOMDocument;
 use DOMXPath;
 use Symfony\Component\DomCrawler\Crawler;
@@ -29,7 +33,7 @@ class ScrapAllConferencesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Scrape All conferences site for saudia arabia and store data in database';
 
     /**
      * Create a new command instance.
@@ -58,40 +62,39 @@ class ScrapAllConferencesCommand extends Command
         libxml_use_internal_errors(true);
         $dom->loadHTML($html);
         libxml_clear_errors();
-
         $crawler = new Crawler($html);
 
         $row=0;
         $updatedValue="";
         $inputElement = $crawler->filter('input[type="hidden"]#row');
-        if ($inputElement->count() > 0) {
+
+        if ($inputElement->count() > 0){
             $inputElement->getNode(0)->setAttribute('value',$row);
             $updatedValue = $inputElement->attr('value');
         }
+
         $all="";
+
         $allElements = $crawler->filter('input[type="hidden"]#all');
         if ($allElements->count() > 0) {
             $all = $allElements->attr('value');
         }
 
-
         while($row<=$all)
         {
-
             $this->all_events($row);
             $row=$updatedValue+300;
-
         }
-
-
-
 
         $this->info('Event inserted successfully.');
 
-
-
-
     }
+
+
+
+
+
+
 
 
 
@@ -108,42 +111,63 @@ class ScrapAllConferencesCommand extends Command
 
         $category_crawler = new Crawler($category_html);
 
-        $categories_section= $category_crawler->filter('.categories-icon a h4');
-        if ($categories_section) {
-                foreach ($categories_section as $c) {
-                $categories= $c->textContent . '<br>';
-                    // Lookup or create the category
-                    $category = Category::firstOrCreate(['name' => $categories]);
+        // Loop through each category
+        $category_crawler->filter('.category-box')->each(function (Crawler $node) {
 
-                }
+            // Get the category name
+            $categoryName = $node->filter('h4')->text();
+            $category_ar = GoogleTranslate::trans($categoryName,'ar');
+
+
+            // Find or create the category
+            $category = Category::where('name', $categoryName)->first();
+
+            if (!$category) {
+                $category = Category::create(['name' => $categoryName]);
+                $category->name_ar = $category_ar;
+                $category->save();
             }
 
+            $category_id = $category->id;
+
+            // Loop through each subcategory
+            $node->filter('li a')->each(function (Crawler $subNode) use ($category_id)  {
+            // Get the subcategory name and URL
+            $subcategoryName = $subNode->text();
+            $subcategoryUrl = $subNode->attr('href');
+            $sub_category=Subcategory::firstOrCreate(['name' => $subcategoryName,'category_id' =>$category_id]);
+
+        
+            });
+        });
 
 
-            // scrape events with post method with specified country and number of rows
-                $client = new Client();
-                $url = 'https://allconferencealert.net/countryAjaxHandler.php'; // Replace with the URL of the AJAX handler
+        // scrape events with post method with specified country and number of rows
+        $client = new Client();
+        $url = 'https://allconferencealert.net/countryAjaxHandler.php'; 
 
-            // Define the data parameters
-                $data = [
-                    'row' =>$row,
-                    'search' => "saudi arabia",
-                    ' filter'=>"",
-                    'rowperpage'=>300
-                ];
+        // Define the data parameters
+        $data = [
+            'row' =>$row,
+            'search' => "saudi arabia",
+            'filter'=>"",
+            'rowperpage'=>300
+        ];
 
-            // Make an HTTP POST request with the data parameters
-                $crawler = $client->request('POST', $url, $data);
+        // Make an HTTP POST request with the data parameters
+            $crawler = $client->request('POST', $url, $data);
 
-            // Extract and process the response
-                $response = $client->getResponse()->getContent();
+        // Extract and process the response
+            $response = $client->getResponse()->getContent();
 
-                $event_crawler = new Crawler();
-                $event_crawler->addHtmlContent($response);
-                $rows = $event_crawler->filter('tr.aevent');
+            $event_crawler = new Crawler();
+            $event_crawler->addHtmlContent($response);
+            $rows = $event_crawler->filter('tr.aevent');
 
-                //Scrape date of event.
-                $rows->each(function (Crawler $row) {
+
+
+            //Scrape date of event.
+            $rows->each(function (Crawler $row) {
                 $day = $row->filter('.date h3')->text();
                 $month = $row->filter('.date span')->text();
                 $all_date=$day . $month;
@@ -152,9 +176,13 @@ class ScrapAllConferencesCommand extends Command
 
                 //scrape title of event.
                 $name = $row->filter('.name a')->text();
+                $title_ar=GoogleTranslate::trans($name,'ar');
 
                 //scrape location of event and region and city.
-                $location=$row->filter('.venue')->text();
+                $location_u=$row->filter('.venue')->text();
+                $location=str_replace("&nbsp;", " ", $location_u);
+                $location_ar=GoogleTranslate::trans($location,'ar');
+
                 // Split the $regionAndCity into city and region
                 $parts = explode(',', $location);
                 $city = $parts[0];
@@ -167,9 +195,11 @@ class ScrapAllConferencesCommand extends Command
                 })->first();
 
                 $regionModel="";
+
                 if($cityModel){
                 $regionModel= $cityModel->region_id;
                 }
+
                 $cityId = $cityModel ? $cityModel->id : null;
                 $regionId = $regionModel ? $regionModel : null;
 
@@ -208,32 +238,39 @@ class ScrapAllConferencesCommand extends Command
 
 
                 // Get all category names
-                $categoryNames = Category::pluck('name')->toArray();
+                $categoryNames = Subcategory::pluck('name')->toArray();
 
                 // Initialize a variable to store the matching category
-                $matchingCategory = null;
+                $matchingCategory = null; 
+                $lastMatchIndex = -1;
+                $updated_name=trim($name,"Conference");
 
                 // Iterate over the category names
                 foreach ($categoryNames as $categoryName) {
-                    if (stripos($name, $categoryName) !== false) {
-                    // Category name found in the title
+                    $position = strpos($updated_name, trim($categoryName,"-"));
+
+                    if ($position !== false && $position > $lastMatchIndex) {
+
+                        // Category name found in the search query, and it's the last occurrence
                         $matchingCategory = $categoryName;
-                        break;
+                        $lastMatchIndex = $position;
                     }
+                    
                 }
 
-                $category = null;
-                $categoryId = null;
+                
+
+                $sub_category = null;
+                $CategoryId = null;
+
                 if ($matchingCategory) {
-                    // Category name found in the title
+
                     // Retrieve the category by name
-                    $category = Category::where('name', $matchingCategory)->first();
+                    $sub_category = Subcategory::where('name', $matchingCategory)->first();
 
-                    if ($category) {
+                    if ($sub_category) {
                         // Category found, get the category ID
-                        $categoryId = $category->id;
-                        $category = Category::where('name', 'conferences')->first();
-
+                        $categoryId = $sub_category->category_id;
 
                     }
                     else{
@@ -241,16 +278,21 @@ class ScrapAllConferencesCommand extends Command
                         $categoryId = $category->id;
 
                     }
-                }else{
+                }
+
+                else{
+
                     $category = Category::firstOrCreate(['name' => 'conferences']);
                     $categoryId = $category->id;
                 }
 
                 $existingEvent = Event::where('event_name', $name)
-                ->where('start_date', $date)
-                ->where('city_id', $cityId)
-                ->where('organizedBy', $organized_by)
-                ->first();
+                    ->where('start_date', $date)
+                    ->where('city_id', $cityId)
+                    ->where('organizedBy', $organized_by)
+                    ->first();
+
+
                 if (!$existingEvent) {
 
                     $s_time="9Am";
@@ -258,10 +300,10 @@ class ScrapAllConferencesCommand extends Command
                     $start_time = date('H:i:s', strtotime($s_time));
                     $end_time = date('H:i:s', strtotime($e_time));
 
-
                     // Create a new Event instance
                     $event = new Event();
                     $event->event_name = $name;
+                    $event->event_name_ar = $title_ar;
                     $event->category_id = $categoryId;
                     $event->region_id = $regionId; // Set the region ID
                     $event->city_id = $cityId; // Set the city ID
@@ -270,6 +312,7 @@ class ScrapAllConferencesCommand extends Command
                     $event->url = $event_url;
                     $event->event_image="https://allconferencealert.net/blog/wp-content/uploads/2023/08/Education-Conference-Pathway-To-Success.jpg";
                     $event->location = $location;
+                    $event->location_ar = $location_ar;
                     $event->start_date = $date;
                     $event->end_date = $date;
                     $event->start_time =$start_time ;
@@ -280,11 +323,11 @@ class ScrapAllConferencesCommand extends Command
 
                 }
 
-     });
+            });
 
 
 
 
 
-     }
+    }
 }

@@ -20,7 +20,7 @@ class InsertCitiesCommand extends Command
      *
      * @var string
      */
-    protected $description = 'insert cities from json file';
+    protected $description = 'insert cities from json file to database.';
 
     /**
      * Create a new command instance.

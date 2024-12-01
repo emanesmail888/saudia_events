@@ -12,7 +12,7 @@ class Event extends Model
     use HasFactory;
     protected $table="events";
 
-    public function category():BelongsTo
+    public function categories():BelongsTo
     {
         return($this->belongsTo(Category::class,'category_id'));
     }
